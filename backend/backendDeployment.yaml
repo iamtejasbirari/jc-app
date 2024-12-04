@@ -1,0 +1,38 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-app
+  labels: 
+    app: backend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-app
+  template:
+    metadata:
+      labels:
+        app: backend-app
+    spec:
+      imagePullSecrets:
+      - name: ecr-secret
+      containers:
+        - name: backend-app-container
+          image: 084375542210.dkr.ecr.eu-north-1.amazonaws.com/job-connect:jc-back-01
+          ports:
+            - containerPort: 5000
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-app-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5000
+      targetPort: 5000
+      nodePort: 30080
+  selector:
+    app: backend-app

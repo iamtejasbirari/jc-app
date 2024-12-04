@@ -1,0 +1,36 @@
+# Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-app
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      imagePullSecrets:
+      - name: ecr-secret
+      containers:
+        - name: frontend-app-container
+          image: 084375542210.dkr.ecr.eu-north-1.amazonaws.com/job-connect:jc-front-01
+          ports:
+            - containerPort: 80
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-app-service
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30090
+  selector:
+    app: frontend-app
