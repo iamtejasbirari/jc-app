@@ -1,8 +1,21 @@
-import express from 'express';
-import cors from 'cors';
+const express = require('express');
+const cors = require('cors');
+const mysql = require('mysql2');
+const dotenv = require('dotenv');
 
 const app = express();
+dotenv.config();
 const port = 5000;
+
+const pool = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+})
+
+// Promisify queries for ease of use
+const db = pool.promise();
 
 // Static array for todos
 const todos = [
@@ -26,8 +39,13 @@ app.get('/api/todos', (req, res) => {
 });
 
 // Root endpoint
-app.get('/', (req, res) => {
-  res.send('IM BACK');
+app.get('/', async (req, res) => {
+  try {
+    const [rows] = await db.query('SHOW DATABASES');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch DATABASES' });
+  }
 });
 
 // Start the server
