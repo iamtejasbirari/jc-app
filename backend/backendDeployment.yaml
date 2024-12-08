@@ -19,7 +19,7 @@ spec:
       - name: ecr-secret
       containers:
         - name: backend-app-container
-          image: 084375542210.dkr.ecr.eu-north-1.amazonaws.com/job-connect:jc-back-01
+          image: 084375542210.dkr.ecr.eu-north-1.amazonaws.com/job-connect:jc-back-02
           ports:
             - containerPort: 5000
 ---
